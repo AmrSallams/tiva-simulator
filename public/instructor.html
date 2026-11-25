@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instructor remote - TIVA simulator</title>
+<link rel="stylesheet" href="css/instructor.css">
+</head>
+<body>
+<header id="bar">
+  <a class="brand" id="home" href="index.html">INSTRUCTOR<span id="stationName"></span></a>
+  <span id="clock">00:00:00</span>
+  <button type="button" id="pause">Pause</button>
+  <div class="seg" id="speed" role="group" aria-label="Simulation speed">
+    <button type="button" data-speed="1">x1</button>
+    <button type="button" data-speed="2">x2</button>
+    <button type="button" data-speed="5">x5</button>
+    <button type="button" data-speed="10">x10</button>
+  </div>
+</header>
+<div id="offline">Connection to the simulator lost. Reconnecting…</div>
+
+<main>
+  <section class="card" id="vitalsCard">
+    <h2>Vital signs <button type="button" class="small" id="releaseAll">All to automatic</button></h2>
+    <p class="hint">Values follow the drugs automatically. Set a value to take it over; "Auto" hands it back.</p>
+    <div class="over">
+      <span>Change over</span>
+      <div class="seg" id="ramp" role="group" aria-label="Change over">
+        <button type="button" data-ramp="0">At once</button>
+        <button type="button" data-ramp="30" class="on">30 s</button>
+        <button type="button" data-ramp="60">1 min</button>
+        <button type="button" data-ramp="180">3 min</button>
+      </div>
+    </div>
+    <div id="vitals"></div>
+  </section>
+
+  <section class="card">
+    <h2>Events</h2>
+    <h3>Stimulation</h3>
+    <div class="row">
+      <button type="button" data-event="intubation">Intubation</button>
+      <button type="button" data-event="incision">Skin incision</button>
+    </div>
+    <div class="seg wide" id="stim" role="group" aria-label="Ongoing surgical stimulation">
+      <button type="button" data-stim="none">None</button>
+      <button type="button" data-stim="light">Light</button>
+      <button type="button" data-stim="moderate">Moderate</button>
+      <button type="button" data-stim="strong">Strong</button>
+    </div>
+    <p class="hint" id="stimNow"></p>
+
+    <h3>Airway and breathing</h3>
+    <div class="seg wide" id="vent" role="group" aria-label="Ventilation">
+      <button type="button" data-vent="0">Spontaneous</button>
+      <button type="button" data-vent="1">Ventilated</button>
+    </div>
+
+    <h3>Circulation</h3>
+    <div class="row">
+      <button type="button" class="toggle" id="bleeding">Bleeding</button>
+      <button type="button" data-event="fluid">Fluid bolus</button>
+      <button type="button" data-event="pressor">Vasopressor</button>
+      <button type="button" data-event="anticholinergic">Anticholinergic</button>
+    </div>
+    <p class="hint" id="bloodLoss"></p>
+
+    <h3>Lines and pumps</h3>
+    <div class="row">
+      <button type="button" class="toggle" id="line">IV line disconnected</button>
+    </div>
+    <div class="row" id="occlusions"></div>
+  </section>
+
+  <section class="card">
+    <h2>Drug levels in the patient</h2>
+    <div id="levels"></div>
+    <canvas id="trend"></canvas>
+    <div class="lines" role="group" aria-label="Lines shown on the graph">
+      <span>Show on graph</span>
+      <label class="check"><input type="checkbox" data-line="ce"> Ce <small>effect site, solid</small></label>
+      <label class="check"><input type="checkbox" data-line="cp"> Cp <small>plasma, dashed</small></label>
+      <label class="check"><input type="checkbox" data-line="rate"> Rate <small>mL/h</small></label>
+    </div>
+    <label class="check"><input type="checkbox" id="showTrend"> Show this graph on the pump screen</label>
+  </section>
+
+  <section class="card">
+    <h2>Case</h2>
+    <div class="row">
+      <select id="preset" aria-label="Patient"></select>
+      <button type="button" id="reset" class="danger">Start new case</button>
+    </div>
+    <h3>Monitor parameters</h3>
+    <div id="modules" class="checks"></div>
+    <label class="check"><input type="checkbox" id="lockMonitor"> Lock the monitor (trainees cannot change values or parameters)</label>
+    <h3>Address for other devices</h3>
+    <p class="hint" id="addresses">Looking up…</p>
+    <h3>Open the other screens</h3>
+    <div class="row">
+      <a id="openMonitor" target="_blank" rel="noopener">Monitor</a>
+      <a id="openPump" target="_blank" rel="noopener">Pumps</a>
+    </div>
+  </section>
+
+  <section class="card" id="logCard">
+    <h2>Case log <a id="exportLog" class="small">Download CSV</a></h2>
+    <ol id="log"></ol>
+  </section>
+</main>
+<script type="module" src="js/instructor.js"></script>
+</body>
+</html>

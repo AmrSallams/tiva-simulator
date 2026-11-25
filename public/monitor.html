@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patient monitor - TIVA simulator</title>
+<link rel="stylesheet" href="css/monitor.css">
+</head>
+<body>
+<header id="bar">
+  <div class="patient">SIMULATION<span>Education only</span></div>
+  <div id="alarmText" role="status" aria-live="polite"></div>
+  <div class="tools">
+    <button id="btnSilence" type="button">Silence alarms</button>
+    <button id="btnSound" type="button">Sound: off</button>
+    <button id="btnSetup" type="button">Parameters</button>
+    <button id="btnFull" type="button">Full screen</button>
+    <span id="clock"></span>
+  </div>
+</header>
+<div id="pausedBanner" hidden>Simulation paused by the instructor</div>
+<main id="rows"></main>
+<footer id="strip"></footer>
+<dialog id="editDlg"></dialog>
+<dialog id="setupDlg"></dialog>
+<script type="module" src="js/monitor/monitor.js"></script>
+</body>
+</html>

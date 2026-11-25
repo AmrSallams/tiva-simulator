@@ -1,0 +1,151 @@
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; display: flex; flex-direction: column; overflow: hidden;
+  background: #000; color: #d7dde3;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-user-select: none; user-select: none;
+}
+button, input, select { font: inherit; }
+
+/* ---------- top bar ---------- */
+#bar {
+  flex: none; display: flex; align-items: center; gap: 12px; min-height: 44px;
+  padding: 4px 10px; background: #10151b; border-bottom: 1px solid #27313b;
+}
+.patient { font-weight: 600; letter-spacing: .04em; font-size: 14px; white-space: nowrap; }
+.patient span { display: block; font-weight: 400; font-size: 11px; color: #8b98a5; letter-spacing: 0; }
+#alarmText {
+  flex: 1; min-width: 0; text-align: center; font-weight: 700; font-size: 16px;
+  padding: 4px 8px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#alarmText.medium { background: #ffd500; color: #000; }
+#alarmText.high { background: #ff2b2b; color: #fff; animation: flash-high .5s steps(2, jump-none) infinite; }
+.tools { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.tools button {
+  background: #1c242d; color: #d7dde3; border: 1px solid #364250; border-radius: 6px;
+  padding: 6px 10px; font-size: 13px; cursor: pointer; white-space: nowrap;
+}
+.tools button:hover { border-color: #6b7c8d; }
+.tools button.on { background: #1f4d2b; border-color: #3ddc4a; }
+.tools button.warn { background: #5a4a00; border-color: #ffd500; }
+#clock { font-variant-numeric: tabular-nums; font-size: 15px; padding: 0 4px; }
+
+/* ---------- waveform rows ---------- */
+#rows { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.row {
+  flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) clamp(170px, 27vw, 340px);
+  border-bottom: 1px solid #1c232b; color: var(--c);
+}
+.wave { position: relative; min-width: 0; min-height: 0; }
+.wave canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.wave .wlabel { position: absolute; left: 8px; top: 4px; font-size: 13px; opacity: .85; z-index: 1; }
+.wave .wscale { position: absolute; right: 6px; font-size: 11px; opacity: .6; z-index: 1; }
+.wave .wscale.top { top: 3px; }
+.wave .wscale.bottom { bottom: 3px; }
+
+/* ---------- numeric tiles ---------- */
+.tile {
+  position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0;
+  padding: 4px 10px; border: 0; border-left: 1px solid #1c232b; background: transparent;
+  color: var(--c); text-align: left; cursor: pointer; overflow: hidden;
+}
+.tile:hover, .tile:focus-visible { background: #0f151b; outline: none; }
+.tile:focus-visible { box-shadow: inset 0 0 0 2px #4da6ff; }
+.t-head { display: flex; align-items: baseline; gap: 6px; font-size: 14px; white-space: nowrap; }
+.t-head b { font-size: 16px; }
+.t-head .lim { margin-left: auto; font-size: 12px; opacity: .7; font-variant-numeric: tabular-nums; }
+.t-val {
+  flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: .25em;
+  font-weight: 500; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums;
+  font-size: min(calc(var(--rowh, 120px) * 0.58), 8vw);
+}
+.t-val.long { font-size: min(calc(var(--rowh, 120px) * 0.44), 4.8vw); }
+.t-val small { font-size: .45em; opacity: .85; }
+.t-val .pair { display: flex; flex-direction: column; align-items: flex-end; font-size: .5em; gap: .1em; }
+.t-val .pair span { font-size: .55em; opacity: .8; margin-right: .3em; }
+.t-sub { font-size: 12px; opacity: .8; white-space: nowrap; }
+.heart { font-style: normal; font-size: .3em; opacity: .25; align-self: flex-start; }
+.heart.beat { opacity: 1; }
+
+.tile.alarm-medium { background: #ffd500; color: #000; }
+.tile.alarm-high { background: #ff2b2b; color: #fff; animation: flash-high .5s steps(2, jump-none) infinite; }
+@keyframes flash-high { 50% { background: #7a0000; } }
+
+/* ---------- bottom strip (values with no waveform) ---------- */
+#strip { flex: none; display: flex; border-top: 1px solid #27313b; }
+#strip:empty { display: none; }
+#strip .tile { flex: 1; height: clamp(84px, 15vh, 130px); border-left: 1px solid #1c232b; --rowh: clamp(84px, 15vh, 130px); }
+#strip .tile:first-child { border-left: 0; }
+#strip .t-val { justify-content: flex-start; font-size: min(calc(var(--rowh) * 0.42), 6vw); }
+
+/* ---------- dialogs ---------- */
+dialog {
+  width: min(460px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto;
+  background: #161d25; color: #e6edf3; border: 1px solid #3a4756; border-radius: 12px; padding: 18px;
+  -webkit-user-select: text; user-select: text;
+}
+dialog::backdrop { background: rgba(0, 0, 0, .6); }
+dialog h2 { margin: 0 0 14px; font-size: 18px; }
+dialog h3 { margin: 16px 0 8px; font-size: 13px; font-weight: 600; color: #9aa7b4; text-transform: uppercase; letter-spacing: .05em; }
+.field { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; margin-bottom: 10px; }
+.field label { font-size: 15px; }
+.field label small { color: #9aa7b4; }
+.stepper { display: flex; align-items: center; gap: 6px; }
+.stepper button {
+  width: 44px; height: 44px; border-radius: 8px; border: 1px solid #3a4756; background: #222c37; color: #e6edf3;
+  font-size: 22px; line-height: 1; cursor: pointer;
+}
+.stepper button:active { background: #2f3c4a; }
+dialog input[type=number], dialog select {
+  height: 44px; border-radius: 8px; border: 1px solid #3a4756; background: #0d1117; color: #e6edf3;
+  padding: 0 8px; font-size: 18px; text-align: center; font-variant-numeric: tabular-nums;
+}
+.stepper input { width: 84px; }
+.limits { display: flex; align-items: center; gap: 8px; }
+.limits input { width: 76px; font-size: 15px; height: 38px; }
+.seg { display: flex; border: 1px solid #3a4756; border-radius: 8px; overflow: hidden; }
+.seg label { flex: 1; text-align: center; padding: 10px 4px; font-size: 14px; cursor: pointer; background: #0d1117; }
+.seg label + label { border-left: 1px solid #3a4756; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label:has(input:checked) { background: #1d4f8c; }
+.seg label:has(input:focus-visible) { outline: 2px solid #4da6ff; outline-offset: -2px; }
+.actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.actions button {
+  min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #3a4756; background: #222c37;
+  color: #e6edf3; font-size: 15px; cursor: pointer;
+}
+.actions .primary { background: #1d6fd1; border-color: #1d6fd1; font-weight: 600; margin-left: auto; }
+.actions .danger { color: #ff8f8f; }
+.check { display: flex; align-items: center; gap: 10px; padding: 9px 0; font-size: 16px; cursor: pointer; }
+.check input { width: 22px; height: 22px; }
+.check small { color: #9aa7b4; margin-left: auto; }
+.note { color: #9aa7b4; font-size: 13px; margin: 8px 0 0; }
+
+@media (max-width: 700px) {
+  .patient span, #btnFull { display: none; }
+  .tools button { padding: 6px 8px; font-size: 12px; }
+  #bar { flex-wrap: wrap; }
+  .tools { flex: 1; }
+  #alarmText { font-size: 14px; order: 3; flex-basis: 100%; }
+  #alarmText:empty { display: none; }
+  .t-val { font-size: min(calc(var(--rowh, 120px) * 0.58), 14vw); }
+  .t-val.long { font-size: min(calc(var(--rowh, 120px) * 0.44), 9vw); }
+  #strip .t-val { font-size: min(calc(var(--rowh) * 0.42), 7vw); }
+  .t-sub { overflow: hidden; text-overflow: ellipsis; }
+  .t-head .lim { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #alarmText.high, .tile.alarm-high { animation: none; }
+}
+.t-val .pair.big { font-size: .82em; }
+.t-val .pair.re { color: #ff9f2e; }
+/* Mid-width screens: give the alarm message its own line so it is never squeezed. */
+@media (max-width: 1000px) {
+  #bar { flex-wrap: wrap; }
+  .tools { flex: 1; }
+  #alarmText { order: 3; flex-basis: 100%; }
+  #alarmText:empty { display: none; }
+}
+#pausedBanner { flex: none; padding: 6px 12px; background: #7a5a00; color: #fff; font-size: 15px; font-weight: 600; text-align: center; }
+#pausedBanner[hidden] { display: none; }

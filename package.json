@@ -1,0 +1,12 @@
+{
+  "name": "tiva-simulator",
+  "version": "0.1.0",
+  "description": "TIVA / TCI teaching simulator. For education only, not for clinical use.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test",
+    "docs:code": "node tools/make-code-doc.js"
+  }
+}

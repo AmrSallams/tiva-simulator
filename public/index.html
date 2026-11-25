@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TIVA simulator</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0d1117; color: #e6edf3;
+         font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { width: min(520px, calc(100% - 32px)); }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  p { color: #9aa7b4; margin: 0 0 24px; }
+  a { display: block; padding: 18px 20px; margin-bottom: 12px; border: 1px solid #2b3540; border-radius: 10px;
+      color: inherit; text-decoration: none; font-size: 1.1rem; background: #151b23; }
+  a:hover { border-color: #4da6ff; }
+  a small { display: block; color: #9aa7b4; margin-top: 4px; }
+  .station { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; color: #9aa7b4; }
+  .station input { width: 110px; height: 44px; font: inherit; font-size: 1.2rem; text-align: center; text-transform: uppercase;
+                   background: #0d1117; color: #e6edf3; border: 1px solid #2b3540; border-radius: 8px; }
+  .foot { font-size: .85rem; margin-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>TIVA simulator</h1>
+  <p>For education only. Not for clinical use.</p>
+  <label class="station">Station code
+    <input id="code" value="1" maxlength="8" autocomplete="off" autocapitalize="characters">
+  </label>
+  <a data-page="monitor.html" href="monitor.html">Patient monitor<small>Waveforms, vital signs, alarms</small></a>
+  <a data-page="pump.html" href="pump.html">TCI pumps<small>Program and run propofol, remifentanil and other infusions</small></a>
+  <a data-page="instructor.html" href="instructor.html">Instructor remote<small>Time, vital signs, events, drug levels and case log</small></a>
+  <p class="foot">Screens with the same station code share one patient. Use a different code for each station.</p>
+  <p class="foot" id="addresses"></p>
+</main>
+<script>
+  const code = document.getElementById('code');
+  const fromUrl = new URLSearchParams(location.search).get('s');
+  if (fromUrl) code.value = fromUrl;
+  const update = () => {
+    const value = code.value.toUpperCase().replace(/[^A-Z0-9]/g, '') || '1';
+    document.querySelectorAll('a[data-page]').forEach((a) => (a.href = a.dataset.page + '?s=' + encodeURIComponent(value)));
+  };
+  code.addEventListener('input', update);
+  fetch('/api/info').then((r) => r.json()).then((info) => {
+    if (info.addresses.length) {
+      document.getElementById('addresses').textContent = 'Other devices on the same Wi-Fi: open ' + info.addresses.join(' or ');
+    }
+  }).catch(() => {});
+  update();
+</script>
+</body>
+</html>

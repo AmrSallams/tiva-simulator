@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TCI pumps - TIVA simulator</title>
+<link rel="stylesheet" href="css/pump.css">
+</head>
+<body>
+<header id="bar">
+  <a class="brand" id="home" href="index.html">TCI PUMPS<span>Simulation, education only</span></a>
+  <span id="simInfo"></span>
+  <label>Pump style
+    <select id="style"></select>
+  </label>
+  <button type="button" id="addPump">Add pump</button>
+  <button type="button" id="sound">Sound: off</button>
+</header>
+<div id="offline">Connection to the simulator lost. Reconnecting…</div>
+<div id="pausedBanner" hidden>Simulation paused by the instructor. Time is stopped, so the pumps are not infusing.</div>
+<main id="pumps"></main>
+<section id="trendBox" hidden>
+  <h2>Drug levels and infusion rates</h2>
+  <canvas id="trend"></canvas>
+</section>
+<script type="module" src="js/pump/pump.js"></script>
+</body>
+</html>
